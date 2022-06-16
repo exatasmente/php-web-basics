@@ -1,0 +1,46 @@
+version: '3.3'
+networks:
+  backend:
+  frontend:
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-vista
+    ports:
+      - '32769:3306'
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=store-front
+      - SERVICE_TAGS=dev
+      - SERVICE_NAME=mysql
+    volumes:
+      - default-mysql:/data
+      - ./mysql:/var/lib/mysql
+  site:
+    image: nginx:stable-alpine
+    container_name: nginx-vista
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl/:/etc/nginx/ssl
+    networks:
+      - backend
+      - frontend
+  php:
+    build: php-fpm
+    container_name: php-vista
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "9000:9000"
+    networks:
+      - backend
+
+volumes:
+  default-mysql:
+    driver: local
