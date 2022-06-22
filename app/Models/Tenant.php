@@ -9,8 +9,4 @@ class Tenant extends Model
     public string $email;
     public string $phone_number;
 
-    public function beforeSave(array &$data = [])
-    {
-
-    }
 }

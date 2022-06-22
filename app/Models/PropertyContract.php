@@ -14,10 +14,10 @@ class PropertyContract extends Model
 
     public $starts_at;
     public $ends_at;
-    public $adminstration_fee;
-    public $rent_amount;
-    public $condo_amount;
-    public $iptu_amount;
+    public string $administration_fee;
+    public int $rent_amount;
+    public int $condo_amount;
+    public int $iptu_amount;
 
     public $property_id;
     public $property_owner_id;

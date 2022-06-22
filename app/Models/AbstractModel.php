@@ -135,6 +135,8 @@ abstract class AbstractModel implements OrmModelInterface
             }
         }
 
+        $result = [];
+
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $rawRow) {
             $result[] = static::morph($rawRow);
         }
@@ -150,7 +152,28 @@ abstract class AbstractModel implements OrmModelInterface
         return null;
     }
 
+    public static function raw($query)
+    {
+        $stmt = static::$db->query($query);
 
+        $errorCode = static::$db->errorCode();
+
+        if ($errorCode) {
+            if ($errorCode !== '00000') {
+                throw new \Exception(implode('|', static::$db->errorInfo()), 500);
+            }
+        }
+
+        $result = [];
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $rawRow) {
+            $result[] = $rawRow;
+        }
+
+        $stmt->closeCursor();
+
+        return $result;
+    }
 
     /**
      * Delete the record from the database.
@@ -196,10 +219,10 @@ abstract class AbstractModel implements OrmModelInterface
 
     protected function beforeSave(array &$data = []) {
         if (!$this->getId() && static::$createdAtColumn) {
-            $data[static::$createdAtColumn] = 'CURRENT_TIMESTAMP';
+            $data[static::$createdAtColumn] = date('Y-m-d H:i:s');
         }
         if (static::$updatedAtColumn) {
-            $data[static::$updatedAtColumn] = 'CURRENT_TIMESTAMP';
+            $data[static::$updatedAtColumn] = date('Y-m-d H:i:s');
         }
     }
 

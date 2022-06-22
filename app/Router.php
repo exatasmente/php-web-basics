@@ -50,6 +50,10 @@ class Router
 
     public function addRoute($path, $handler, $method)
     {
+        if ($path[0] !== '/') {
+            $path = '/' . $path;
+        }
+
         $hasPath = array_key_exists($path, $this->routes);
         $variables = $this->getRouteVariables($path);
         $params = [];

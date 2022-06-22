@@ -1,6 +1,5 @@
 <?php
 
-use App\DatabaseMigrations\CreatePropertyOwnersTable;
 use App\Router;
 
 $router = new Router();
@@ -33,6 +32,10 @@ $router->get('/property-contract/{id}', 'App\Controllers\PropertyContractControl
 $router->post('/property-contract', 'App\Controllers\PropertyContractController@store');
 $router->put('/property-contract/{id}', 'App\Controllers\PropertyContractController@update');
 $router->delete('/property-contract/{id}', 'App\Controllers\PropertyContractController@delete');
+
+//$router->get('execute_migrations', function() {
+//    (new \App\DatabaseMigrations\ExecuteMigrations())->run();
+//});
 
 
 return $router;

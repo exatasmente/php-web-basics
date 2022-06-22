@@ -1,13 +1,29 @@
 <?php
 
 namespace App\DatabaseMigrations;
+use App\Models\Model;
 
-class Migration
+class Migration extends Model
 {
-    protected $connection;
+    public static string $tableName = 'migrations';
 
-    public function __construct($connection)
+    public $name;
+    public $step;
+
+
+    public function up()
     {
-        $this->connection = $connection;
+        $query = "
+            CREATE TABLE `migrations` (
+                `id` INT NOT NULL AUTO_INCREMENT,
+                `name` VARCHAR(191) NOT NULL,
+                `step` INT NOT NULL,
+                `created_at` DATETIME NOT NULL,
+                `updated_at` DATETIME NOT NULL,
+                PRIMARY KEY (`id`)
+            );
+        ";
+
+        return static::raw($query);
     }
 }

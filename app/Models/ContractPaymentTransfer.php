@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Traits\HasContractPayment;
-use App\Models\Traits\HasPropertyContract;
 
 class ContractPaymentTransfer
 {

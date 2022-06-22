@@ -4,17 +4,25 @@ use App\Exceptions\ExceptionHandler;
 use App\Models\AbstractModel;
 use App\Requests\Request;
 use App\Utils\DotEnv;
+use PDO;
 
 class Application
 {
     private Router $router;
-
+    private PDO $db;
     public function __construct()
     {
         DotEnv::load(__DIR__. '/../.env');
         $dns = 'mysql:host='. getenv('DB_HOST') .';dbname='. getenv('DB_TABLE');
         $connection = new \PDO($dns,getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
+        $this->db = $connection;
+
         AbstractModel::useConnection($connection);
+    }
+
+    public function getDBConnection()
+    {
+        return $this->db;
     }
 
     public static function make()
