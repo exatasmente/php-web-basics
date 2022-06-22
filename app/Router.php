@@ -2,6 +2,8 @@
 namespace App;
 
 use App\Controllers\Contracts\ControllerInterface;
+use App\Exceptions\HttpException;
+use App\Exceptions\NotFoundHttpException;
 use App\Requests\Request;
 use Exception;
 
@@ -24,6 +26,27 @@ class Router
 
         return null;
     }
+
+    public function get($path, $handler)
+    {
+        $this->addRoute($path, $handler, 'GET');
+    }
+
+    public function post($path, $handler)
+    {
+        $this->addRoute($path, $handler, 'POST');
+    }
+
+    public function put($path, $handler)
+    {
+        $this->addRoute($path, $handler, 'PUT');
+    }
+
+    public function delete($path, $handler)
+    {
+        $this->addRoute($path, $handler, 'DELETE');
+    }
+
 
     public function addRoute($path, $handler, $method)
     {
@@ -68,14 +91,19 @@ class Router
 
         if (in_array($path, $routes)) {
             $route = $this->routes[$path];
+            if (!array_key_exists($method, $route)) {
+              throw new NotFoundHttpException('unable to find route ' . strtoupper($method) . ' : ' . $path, 404);
+            }
+
+            $route = $route[$method];
         } else {
             $numberOfParts = substr_count($path, '/');
-            $routes = array_filter($routes, function ($route) use ($numberOfParts) {
-                return substr_count($route, '/') === $numberOfParts;
+            $routes = array_filter($routes, function ($route) use ($numberOfParts, $method) {
+                return substr_count($route, '/') === $numberOfParts && array_key_exists($method, $this->routes[$route]);
             });
 
             if (empty($routes)) {
-                throw new Exception();
+                throw new NotFoundHttpException('unable to find route ' . strtoupper($method) . ' : ' . $path, 404);
             }
 
             $pathParts = explode('/', $path);
@@ -85,25 +113,24 @@ class Router
                 $routeParts = explode('/', $possibleRoute);
                 $currentRoute = $this->routes[$possibleRoute];
 
-                if (!array_key_exists($method, $currentRoute)) {
-                    continue;
-                }
-
                 $currentRoute = $currentRoute[$method];
                 $currentRouteParams = $currentRoute['params'];
                 $parsedRoute = [];
 
                 foreach ($routeParts as $index => $routePart) {
+
                     if ($routePart === $pathParts[$index]) {
                         $parsedRoute []= $pathParts[$index];
                     } else if (array_key_exists($routePart, $currentRouteParams)) {
                         $param = $currentRouteParams[$routePart];
+
                         if ($param === $index) {
                             $parsedRoute [] = $routePart;
                             $params[$index] = $pathParts[$index];
                         }
                     }
                 }
+
                 if (count($parsedRoute) === count($pathParts)) {
                     $route = $currentRoute;
                     break;
@@ -112,10 +139,12 @@ class Router
         }
 
         if (!$route) {
-            throw new Exception('No route found');
+            throw new NotFoundHttpException('unable to find route ' . strtoupper($method) . ' : ' . $path, 404);
         }
 
-        return $this->callHandler($route['handler'], $request, $params);
+        $handler = $route['handler'];
+
+        return $this->callHandler($handler, $request, $params);
     }
 
     /**
@@ -131,7 +160,7 @@ class Router
         } else if (is_callable($handler)) {
             return call_user_func($handler, $request, ...$params);
         } else {
-            throw new Exception('Unable to call handler');
+            throw new HttpException('fail to call handler', 500);
         }
 
         if (class_exists($action) && in_array(ControllerInterface::class, class_implements($action) ?: [])) {
@@ -143,6 +172,6 @@ class Router
             }
         }
 
-        throw new Exception('Unable to call handler ' . $action);
+        throw new HttpException('fail to call handler', 500);
     }
 }

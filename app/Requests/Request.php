@@ -15,8 +15,6 @@ class Request
     public array $server;
     public $content;
     public $requestUri;
-    public $baseUrl;
-    public $basePath;
     public $method;
 
     public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
@@ -116,11 +114,6 @@ class Request
         }
 
         return $this->content;
-    }
-
-    public function getUri()
-    {
-        // TODO: Implement getUri() method.
     }
 
     public function getServerParams()
