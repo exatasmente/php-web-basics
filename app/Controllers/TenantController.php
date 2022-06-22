@@ -21,9 +21,7 @@ class TenantController extends BaseController
         $tenants = array_map(function($tenant) {
             return $tenant->toArray();
         }, $tenants);
-        $tenants[] = [
-            'count' => Tenant::count(),
-        ];
+
         return Response::json($tenants)->send();
 
     }

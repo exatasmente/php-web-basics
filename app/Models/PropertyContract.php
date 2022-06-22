@@ -6,7 +6,6 @@ use App\Models\Traits\HasTenant;
 
 class PropertyContract extends Model
 {
-    use HasPropertyOwner;
     use HasTenant;
     use HasProperty;
 
@@ -20,11 +19,9 @@ class PropertyContract extends Model
     public int $iptu_amount;
 
     public $property_id;
-    public $property_owner_id;
     public $tenant_id;
 
     protected $tenant;
-    protected $property_owner;
     protected $property;
 
 }

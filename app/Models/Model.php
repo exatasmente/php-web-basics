@@ -12,11 +12,11 @@ class Model extends AbstractModel
 
     public function toArray(): array
     {
-        return (array) $this;
+        return json_decode($this->toJson(), true);
     }
 
     public function toJson(): string
     {
-        return json_encode($this->toArray());
+        return json_encode($this);
     }
 }

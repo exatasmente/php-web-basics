@@ -23,6 +23,7 @@ $router->put('/property/{id}', 'App\Controllers\PropertyController@update');
 $router->delete('/property/{id}', 'App\Controllers\PropertyController@delete');
 
 $router->get('/property/{id}/contract', 'App\Controllers\PropertyController@getContracts');
+$router->post('/property/{id}/contract', 'App\Controllers\PropertyController@storeContract');
 $router->get('/property/{id}/contract/{contract_id}', 'App\Controllers\PropertyController@getContract');
 $router->get('/property/{id}/contract/{contract_id}/payment', 'App\Controllers\PropertyController@getContractPayments');
 $router->get('/property/{id}/contract/{contract_id}/payment/{payment_id}', 'App\Controllers\PropertyController@getContractPayment');

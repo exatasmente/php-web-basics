@@ -135,8 +135,6 @@ abstract class AbstractModel implements OrmModelInterface
             }
         }
 
-        $result = [];
-
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $rawRow) {
             $result[] = static::morph($rawRow);
         }
@@ -149,7 +147,7 @@ abstract class AbstractModel implements OrmModelInterface
                 : $result;
         }
 
-        return null;
+        return $limit == 1 ? null : $result;
     }
 
     public static function raw($query)

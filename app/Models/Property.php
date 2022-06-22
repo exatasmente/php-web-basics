@@ -17,7 +17,6 @@ class Property extends Model
     public $addr_zipcode;
     public $property_owner_id;
 
-    protected $property_owner = null;
 
 
 }

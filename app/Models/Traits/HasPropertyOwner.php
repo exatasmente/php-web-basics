@@ -9,7 +9,7 @@ trait HasPropertyOwner
 
     public function getPropertyOwner()
     {
-        if (!$this->property_owner) {
+        if (!isset($this->property_owner) || !$this->property_owner) {
             $this->property_owner = PropertyOwner::find(['id' => $this->property_owner_id], 1);
         }
 
