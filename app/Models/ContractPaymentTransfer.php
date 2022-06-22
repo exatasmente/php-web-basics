@@ -1,12 +1,15 @@
 <?php
+
 namespace App\Models;
+
+use App\Models\Traits\HasContractPayment;
 use App\Models\Traits\HasPropertyContract;
 
-class ContractPayment extends Model
+class ContractPaymentTransfer
 {
-    use HasPropertyContract;
+    use HasContractPayment;
 
-    public static string $tableName = 'contract_payments';
+    public static string $tableName = 'contract_payment_transfers';
 
     const STATUS_PAID = 'paid';
     const STATUS_PENDING = 'pending';
@@ -17,8 +20,7 @@ class ContractPayment extends Model
     public $status;
     public $notes;
     public $amount;
-    public $property_contract_id;
+    public $contract_payment_id;
 
-    protected $property_contract;
-
+    protected $contract_payment;
 }
