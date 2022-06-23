@@ -85,19 +85,14 @@ class PeriodService
         $date = clone $this->start_date;
 
         if ($cycle === 1) {
-            return $date;
+            return $date->format('Y-m-d');
         }
 
-        $date = $date->add(new \DateInterval("P{$cycle}M"));
-        $numberOfDaysLeft = $this->getDaysLeftToEndOfMonth($date);
-        $numberOfDays = $this->getNumberOfDaysInMonth($date);
+        $cycle = $cycle-1;
 
-        if ($numberOfDaysLeft < $numberOfDays) {
-            $currentDay = (int) $date->format('d');
-            $date = $date->sub(new \DateInterval("P{$currentDay}D"));
-        }
+        $daysLeftToEndOfMonth = $this->getDaysLeftToEndOfMonth($date);
 
-        return $date->add(new \DateInterval("P{$numberOfDaysLeft}D"));
+        return $date->add(new \DateInterval("P{$cycle}M"))->format('Y-m-01');
     }
 
     public function getEndDateForCycle(int $cycle)
@@ -107,16 +102,8 @@ class PeriodService
         }
 
         $date = $this->getStartDateForCycle($cycle);
-        $numberOfDaysLeft = $this->getDaysLeftToEndOfMonth($date);
-        $numberOfDays = $this->getNumberOfDaysInMonth($date);
-
-        if ($numberOfDaysLeft < $numberOfDays) {
-            $currentDay = (int) $date->format('d');
-            $date = $date->sub(new \DateInterval("P{$currentDay}D"));
-        }
-
-
-        return $date->add(new \DateInterval("P{$numberOfDays}D"));
+        $date = DateTime::createFromFormat('Y-m-d', $date);
+        return $date->format('Y-m-t');
     }
 
     public function getDaysLeftToEndOfMonth($date)

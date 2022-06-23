@@ -41,8 +41,8 @@ class PropertyContractService
         $numberOfCycles = $period->getNumberOfCycles();
         $this->createContractPayment($propertyContract, [
             'cycle' => 1,
-            'starts_at' => $period->getStartDateForCycle(1)->format('Y-m-d'),
-            'ends_at' => $period->getEndDateForCycle(1)->format('Y-m-d'),
+            'starts_at' => $period->getStartDateForCycle(1),
+            'ends_at' => $period->getEndDateForCycle(1),
             'amount' => $firstPaymentAmount,
             'note' => 'created',
         ]);
@@ -50,8 +50,8 @@ class PropertyContractService
         for ($cycle = 2; $cycle <= $numberOfCycles-1 ; $cycle += 1) {
             $this->createContractPayment($propertyContract, [
                 'cycle' => $cycle,
-                'starts_at' => $period->getStartDateForCycle($cycle)->format('Y-m-d'),
-                'ends_at' => $period->getEndDateForCycle($cycle)->format('Y-m-d'),
+                'starts_at' => $period->getStartDateForCycle($cycle),
+                'ends_at' => $period->getEndDateForCycle($cycle),
                 'amount' => $propertyContract->getRentTotalAmount(),
                 'note' => 'created',
             ]);
@@ -59,8 +59,8 @@ class PropertyContractService
 
         $this->createContractPayment($propertyContract, [
             'cycle' => $numberOfCycles,
-            'starts_at' => $period->getStartDateForCycle($numberOfCycles)->format('Y-m-d'),
-            'ends_at' => $period->getEndDateForCycle($numberOfCycles)->format('Y-m-d'),
+            'starts_at' => $period->getStartDateForCycle($numberOfCycles),
+            'ends_at' => $period->getEndDateForCycle($numberOfCycles),
             'amount' => $lastPaymentAmount,
             'note' => 'created',
         ]);
