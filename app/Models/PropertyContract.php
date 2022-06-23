@@ -13,7 +13,7 @@ class PropertyContract extends Model
 
     public $starts_at;
     public $ends_at;
-    public string $administration_fee;
+    public int $administration_fee;
     public int $rent_amount;
     public int $condo_amount;
     public int $iptu_amount;
@@ -23,5 +23,20 @@ class PropertyContract extends Model
 
     protected $tenant;
     protected $property;
+
+    public function getRentTotalAmount()
+    {
+        return $this->rent_amount + $this->condo_amount + $this->iptu_amount;
+    }
+
+    public function getTransferAmountFor($amount)
+    {
+        return ($this->administration_fee / 100) * $amount;
+    }
+
+    public function getTransferAmount()
+    {
+        return $this->getTransferAmountFor($this->getRentTotalAmount() - $this->condo_amount);
+    }
 
 }

@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Models\Traits\HasContractPayment;
 
-class ContractPaymentTransfer
+class ContractPaymentTransfer extends Model
 {
     use HasContractPayment;
 
     public static string $tableName = 'contract_payment_transfers';
 
-    const STATUS_PAID = 'paid';
+    const STATUS_TRANSFERRED = 'transferred';
     const STATUS_PENDING = 'pending';
 
     public $cycle;
@@ -20,6 +20,4 @@ class ContractPaymentTransfer
     public $notes;
     public $amount;
     public $contract_payment_id;
-
-    protected $contract_payment;
 }

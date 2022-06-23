@@ -2,9 +2,11 @@
 
 namespace App\Requests;
 
+use App\Requests\Contracts\RequestInterface;
+use App\Requests\Contracts\ValidatesRequestInterface;
 use JsonException;
 
-class Request
+class Request implements ValidatesRequestInterface, RequestInterface
 {
     public array $request;
     public array $query;
@@ -13,6 +15,7 @@ class Request
     public array $cookies;
     public array $files;
     public array $server;
+    public array $routeParams;
     public $content;
     public $requestUri;
     public $method;
@@ -38,9 +41,14 @@ class Request
         $this->headers = $this->parseHeaders($server);
         $this->content = $content;
         $this->request = $this->parseRequest($request);
-
+        $this->routeParams = [];
         $this->requestUri = null;
         $this->method = null;
+    }
+
+    public function setRouteParams($params)
+    {
+        $this->routeParams = $params;
     }
 
     public static function capture()
@@ -158,6 +166,18 @@ class Request
         return $default;
     }
 
+    public function getRouteParam($name)
+    {
+        return array_key_exists($name, $this->routeParams)
+            ? $this->routeParams[$name]
+            : null;
+    }
+
+    public function getRouteParams()
+    {
+        return $this->routeParams;
+    }
+
     public function getUploadedFiles()
     {
         return $this->files;
@@ -168,14 +188,14 @@ class Request
         return $this->request;
     }
 
-    public function hasAtrribute($name)
+    public function hasAttribute($name)
     {
         return array_key_exists($name, $this->request);
     }
 
     public function getAttribute($name, $default = null)
     {
-        if ($this->hasAtrribute($name)) {
+        if ($this->hasAttribute($name)) {
             return $this->request[$name];
         }
 
@@ -261,4 +281,19 @@ class Request
         return $content;
     }
 
+    public function validateRequest()
+    {
+
+    }
+
+    public function getData()
+    {
+        return [];
+    }
+
+    public function initializeFromRequest(RequestInterface $request)
+    {
+        $this->initialize($request->query, $request->request, $request->attributes, $request->cookies, $request->files, $request->server, $request->content);
+        return $this;
+    }
 }

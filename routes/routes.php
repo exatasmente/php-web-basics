@@ -4,6 +4,7 @@ use App\Router;
 
 $router = new Router();
 
+$router->middleware(new App\Middlewares\ValidatesRequestsMiddleware());
 $router->get('/tenant', 'App\Controllers\TenantController@all');
 $router->get('/tenant/{id}', 'App\Controllers\TenantController@show');
 $router->post('/tenant', 'App\Controllers\TenantController@store');
@@ -28,11 +29,11 @@ $router->get('/property/{id}/contract/{contract_id}', 'App\Controllers\PropertyC
 $router->get('/property/{id}/contract/{contract_id}/payment', 'App\Controllers\PropertyController@getContractPayments');
 $router->get('/property/{id}/contract/{contract_id}/payment/{payment_id}', 'App\Controllers\PropertyController@getContractPayment');
 
-$router->get('/property-contract', 'App\Controllers\PropertyContractController@all');
-$router->get('/property-contract/{id}', 'App\Controllers\PropertyContractController@show');
-$router->post('/property-contract', 'App\Controllers\PropertyContractController@store');
-$router->put('/property-contract/{id}', 'App\Controllers\PropertyContractController@update');
-$router->delete('/property-contract/{id}', 'App\Controllers\PropertyContractController@delete');
+//$router->get('/property-contract', 'App\Controllers\PropertyContractController@all');
+//$router->get('/property-contract/{id}', 'App\Controllers\PropertyContractController@show');
+//$router->post('/property-contract', 'App\Controllers\PropertyContractController@store');
+//$router->put('/property-contract/{id}', 'App\Controllers\PropertyContractController@update');
+//$router->delete('/property-contract/{id}', 'App\Controllers\PropertyContractController@delete');
 
 //$router->get('execute_migrations', function() {
 //    (new \App\DatabaseMigrations\ExecuteMigrations())->run();

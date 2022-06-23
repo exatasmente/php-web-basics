@@ -9,7 +9,7 @@ trait HasProperty
 
     public function getProperty()
     {
-        if (!$this->property) {
+        if (!isset($this->property) || !$this->property) {
             $this->property = Property::find(['id' => $this->property_id], 1);
         }
 

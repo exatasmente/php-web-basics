@@ -19,6 +19,12 @@ class ContractPayment extends Model
     public $amount;
     public $property_contract_id;
 
-    protected $property_contract;
+    public function getTransferAmount()
+    {
+        $propertyContract = $this->getPropertyContract();
+
+        return $propertyContract->getTransferAmountFor($this->amount);
+    }
+
 
 }

@@ -125,7 +125,9 @@ abstract class AbstractModel implements OrmModelInterface
         }
 
         $limitStr = $limit > 0 ? (' limit ' . $limit) : '';
-        $stmt = static::$db->query($query . $whereClause . $limitStr);
+        $query = $query . $whereClause . $limitStr;
+
+        $stmt = static::$db->query($query);
 
         $errorCode = static::$db->errorCode();
 

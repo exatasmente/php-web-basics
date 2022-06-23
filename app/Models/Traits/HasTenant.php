@@ -8,7 +8,7 @@ trait HasTenant
 {
     public function getTenant()
     {
-        if (!$this->tenant) {
+        if (!isset($this->tenant) || !$this->tenant) {
             $this->tenant = Tenant::find(['id' => $this->tenant_id], 1);
         }
 

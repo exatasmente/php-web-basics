@@ -1,8 +1,6 @@
 <?php
 namespace App;
 
-use App\Controllers\Contracts\ControllerInterface;
-use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundHttpException;
 use App\Requests\Request;
 use Exception;
@@ -10,7 +8,7 @@ use Exception;
 class Router
 {
     public array $routes = [];
-
+    public array $globalMiddleware = ['before' => [], 'after' => []];
     /**
      * Regex from PhpRouter package
      * @see https://github.com/mrjgreen/phroute/
@@ -19,8 +17,7 @@ class Router
 
     private function getRouteVariables($path)
     {
-        if(preg_match_all(self::VARIABLE_REGEX, $path, $matches, PREG_SET_ORDER))
-        {
+        if(preg_match_all(self::VARIABLE_REGEX, $path, $matches, PREG_SET_ORDER)) {
             return $matches;
         }
 
@@ -29,22 +26,27 @@ class Router
 
     public function get($path, $handler)
     {
-        $this->addRoute($path, $handler, 'GET');
+        return $this->addRoute($path, $handler, 'GET');
     }
 
     public function post($path, $handler)
     {
-        $this->addRoute($path, $handler, 'POST');
+        return $this->addRoute($path, $handler, 'POST');
     }
 
     public function put($path, $handler)
     {
-        $this->addRoute($path, $handler, 'PUT');
+        return $this->addRoute($path, $handler, 'PUT');
     }
 
     public function delete($path, $handler)
     {
-        $this->addRoute($path, $handler, 'DELETE');
+        return $this->addRoute($path, $handler, 'DELETE');
+    }
+
+    public function middleware($middleware, $before = true)
+    {
+        $this->globalMiddleware[$before ? 'before' : 'after'] []= $middleware;
     }
 
 
@@ -67,10 +69,12 @@ class Router
 
         }
 
+        $routeInstance = new Route($handler, $this->globalMiddleware);
+
         $route = [
             'path' => $path,
             'params' => $params,
-            'handler' => $handler,
+            'handler' => $routeInstance,
         ];
 
         if (!$hasPath) {
@@ -78,6 +82,8 @@ class Router
         } else {
             $this->routes[$path][strtoupper($method)] = $route;
         }
+
+        return $routeInstance;
     }
 
 
@@ -130,7 +136,9 @@ class Router
 
                         if ($param === $index) {
                             $parsedRoute [] = $routePart;
-                            $params[$index] = $pathParts[$index];
+                            $routePart = str_replace('{','', $routePart);
+                            $routePart = str_replace('}','',$routePart);
+                            $params[$routePart] = $pathParts[$index];
                         }
                     }
                 }
@@ -148,34 +156,12 @@ class Router
 
         $handler = $route['handler'];
 
-        return $this->callHandler($handler, $request, $params);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function callHandler($handler, $request, $params)
-    {
-        if (is_string($handler)) {
-            [$action, $method] = explode('@', $handler);
-        } else if (is_array($handler) && count($handler)  == 2) {
-            $action = $handler[0];
-            $method = $handler[1];
-        } else if (is_callable($handler)) {
-            return call_user_func($handler, $request, ...$params);
-        } else {
-            throw new HttpException('fail to call handler', 500);
+        if (!($handler instanceof Route)) {
+            throw new NotFoundHttpException('unable to find route ' . strtoupper($method) . ' : ' . $path, 404);
         }
 
-        if (class_exists($action) && in_array(ControllerInterface::class, class_implements($action) ?: [])) {
-            $handlerInstance = new $action();
-            if ($method && method_exists($handlerInstance, $method)) {
-                return $handlerInstance->$method($request, ...$params);
-            } else if (is_callable($handlerInstance)) {
-                return $handlerInstance($request, ...$params);
-            }
-        }
 
-        throw new HttpException('fail to call handler', 500);
+        return $handler->handle($request, $params);
     }
+
 }
