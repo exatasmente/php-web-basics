@@ -57,13 +57,13 @@ class Route
             $classMethod = $class->getMethod($method);
             $classParams = $classMethod->getParameters();
 
-            $requestClass = $classParams[0]->getType()->getName();
-
-
-            if (class_exists($requestClass)) {
-                /** @var RequestInterface $requestClass */
-                $request = (new $requestClass())->initializeFromRequest($request);
-                $request->setRouteParams($params);
+            if (count($classParams) > 0) {
+                $requestClass = $classParams[0]->getType()->getName();
+                if (class_exists($requestClass)) {
+                    /** @var RequestInterface $requestClass */
+                    $request = (new $requestClass())->initializeFromRequest($request);
+                    $request->setRouteParams($params);
+                }
             }
 
             $beforeMiddleware = $this->middleware['before'];

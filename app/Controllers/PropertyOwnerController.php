@@ -14,14 +14,14 @@ class PropertyOwnerController extends BaseController
         $propertyOwners = PropertyOwner::find();
 
         if (!$propertyOwners) {
-            return Response::json([])->send();
+            return Response::json([]);
         }
 
         $propertyOwners = array_map(function ($propertyOwner) {
             return $propertyOwner->toArray();
         }, $propertyOwners);
 
-        return Response::json($propertyOwners)->send();
+        return Response::json($propertyOwners);
 
     }
 
@@ -37,10 +37,10 @@ class PropertyOwnerController extends BaseController
         $PropertyOwner = PropertyOwner::find(['id' => intval($id)], 1);
 
         if ($PropertyOwner) {
-            return Response::json($PropertyOwner->toArray())->send();
+            return Response::json($PropertyOwner->toArray());
         }
 
-        return Response::json(['message' => 'PropertyOwner not found'], 404)->send();
+        return Response::json(['message' => 'PropertyOwner not found'], 404);
     }
 
     public function store(Request $request)
@@ -55,7 +55,7 @@ class PropertyOwnerController extends BaseController
         $exist = PropertyOwner::find($data, 1);
 
         if ($exist) {
-            return Response::json(['message' => 'Unable to save PropertyOwner, already exists an PropertyOwner with the same name, email, phone_number and payment_day'], 422)->send();
+            return Response::json(['message' => 'Unable to save PropertyOwner, already exists an PropertyOwner with the same name, email, phone_number and payment_day'], 422);
         }
 
         $propertyOwner = new PropertyOwner();
@@ -65,7 +65,7 @@ class PropertyOwnerController extends BaseController
         $propertyOwner->phone_number = $request->getAttribute('phone_number');
         $propertyOwner->save();
 
-        return Response::json($propertyOwner->toArray(), 201)->send();
+        return Response::json($propertyOwner->toArray(), 201);
 
     }
 
@@ -74,7 +74,7 @@ class PropertyOwnerController extends BaseController
         $propertyOwner = PropertyOwner::find(['id' => intval($id)], 1);
 
         if (!$propertyOwner) {
-            return Response::json(['message' => 'PropertyOwner not found'], 404)->send();
+            return Response::json(['message' => 'PropertyOwner not found'], 404);
         }
 
         $propertyOwner->name = $request->getAttribute('name', $propertyOwner->name);
@@ -83,7 +83,7 @@ class PropertyOwnerController extends BaseController
         $propertyOwner->phone_number = $request->getAttribute('phone_number', $propertyOwner->phone_number);
         $propertyOwner->save();
 
-        return Response::json($propertyOwner->toArray())->send();
+        return Response::json($propertyOwner->toArray());
 
     }
 
@@ -93,11 +93,11 @@ class PropertyOwnerController extends BaseController
         $propertyOwner = PropertyOwner::find(['id' => intval($id)], 1);
 
         if (!$propertyOwner) {
-            return Response::json(['message' => 'PropertyOwner not found'], 404)->send();
+            return Response::json(['message' => 'PropertyOwner not found'], 404);
         }
 
         $propertyOwner->delete();
 
-        return Response::json($propertyOwner->toArray())->send();
+        return Response::json($propertyOwner->toArray());
     }
 }

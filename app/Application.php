@@ -1,5 +1,6 @@
 <?php
 namespace App;
+use App\DatabaseMigrations\ExecuteMigrations;
 use App\Exceptions\ExceptionHandler;
 use App\Models\AbstractModel;
 use App\Requests\Request;
@@ -45,4 +46,11 @@ class Application
         $this->router = include_once (__DIR__ . '/../routes/routes.php');
     }
 
+
+    public function executeMigrations($up = true)
+    {
+        $executeMigrations = new ExecuteMigrations();
+
+        $executeMigrations->run($up);
+    }
 }

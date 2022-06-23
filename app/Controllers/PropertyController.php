@@ -21,14 +21,14 @@ class PropertyController extends BaseController
         $properties = Property::find();
 
         if (!$properties) {
-            return Response::json([])->send();
+            return Response::json([]);
         }
 
         $properties = array_map(function ($property) {
             return $property->toArray();
         }, $properties);
 
-        return Response::json($properties)->send();
+        return Response::json($properties);
 
     }
 
@@ -45,10 +45,10 @@ class PropertyController extends BaseController
 
         if ($property) {
 
-            return Response::json($property->toArray())->send();
+            return Response::json($property->toArray());
         }
 
-        return Response::json(['message' => 'Property not found'], 404)->send();
+        return Response::json(['message' => 'Property not found'], 404);
     }
 
     public function store(Request $request)
@@ -67,14 +67,14 @@ class PropertyController extends BaseController
         $exist = Property::find($data, 1);
 
         if ($exist) {
-            return Response::json(['message' => 'Unable to save Property, already exists an Property with the same name, email, phone_number and payment_day'], 422)->send();
+            return Response::json(['message' => 'Unable to save Property, already exists an Property with the same name, email, phone_number and payment_day'], 422);
         }
 
         $property = new Property();
         $property = $property->morph($data);
         $property->save();
 
-        return Response::json($property->toArray(), 201)->send();
+        return Response::json($property->toArray(), 201);
 
     }
 
@@ -95,13 +95,13 @@ class PropertyController extends BaseController
         $property = Property::find(['id' => intval($id)], 1);
 
         if (!$property) {
-            return Response::json(['message' => 'Property not found'], 404)->send();
+            return Response::json(['message' => 'Property not found'], 404);
         }
 
         $property = $property->morph($data);
         $property->save();
 
-        return Response::json($property->toArray())->send();
+        return Response::json($property->toArray());
 
     }
 
@@ -111,12 +111,12 @@ class PropertyController extends BaseController
         $property = Property::find(['id' => intval($id)], 1);
 
         if (!$property) {
-            return Response::json(['message' => 'Property not found'], 404)->send();
+            return Response::json(['message' => 'Property not found'], 404);
         }
 
         $property->delete();
 
-        return Response::json($property->toArray())->send();
+        return Response::json($property->toArray());
     }
 
     public function storeContract(StorePropertyContractRequest $request, $id)
@@ -127,18 +127,18 @@ class PropertyController extends BaseController
         $tenant = Tenant::find(['id' => intval($request->getAttribute('tenant_id'))], 1);
 
         if (!$property) {
-            return Response::json(['message' => 'Property not found'], 404)->send();
+            return Response::json(['message' => 'Property not found'], 404);
         }
 
         if (!$tenant) {
-            return Response::json(['message' => 'Tenant not found'], 404)->send();
+            return Response::json(['message' => 'Tenant not found'], 404);
         }
 
         $service = new PropertyContractService();
         $propertyContract = $service->createPropertyContract($property, $tenant, $request->getData());
 
 
-        return Response::json($propertyContract->toArray())->send();
+        return Response::json($propertyContract->toArray());
     }
 
     public function getContracts(Request $request, $id)
@@ -149,7 +149,7 @@ class PropertyController extends BaseController
             return $contract->toArray();
         }, $contracts);
 
-        return Response::json($contracts)->send();
+        return Response::json($contracts);
     }
 
     public function getContract(Request $request, $id, $contract_id)
@@ -157,10 +157,10 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
-        return Response::json($contract->toArray())->send();
+        return Response::json($contract->toArray());
     }
 
     public function getContractPayments(Request $request, $id, $contract_id)
@@ -168,7 +168,7 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
         $payments = ContractPayment::find(['property_contract_id' => intval($contract_id)]);
@@ -177,7 +177,7 @@ class PropertyController extends BaseController
             return $payment->toArray();
         }, $payments);
 
-        return Response::json($payments)->send();
+        return Response::json($payments);
     }
 
     public function getContractPayment(Request $request, $id, $contract_id, $payment_id)
@@ -185,16 +185,16 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
         $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
 
         if (!$payment) {
-            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
         }
 
-        return Response::json($payment->toArray())->send();
+        return Response::json($payment->toArray());
     }
 
     public function updateContractPayment(Request $request, $id, $contract_id, $payment_id)
@@ -202,13 +202,13 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
         $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
 
         if (!$payment) {
-            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
         }
 
         $status = $request->getAttribute('status');
@@ -216,7 +216,7 @@ class PropertyController extends BaseController
 
         $payment->save();
 
-        return Response::json($payment->toArray())->send();
+        return Response::json($payment->toArray());
     }
 
     public function getContractPaymentTransfers(Request $request, $id, $contract_id, $payment_id)
@@ -224,13 +224,13 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
         $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)],1);
 
         if (!$payment) {
-            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
         }
 
         $transfers = ContractPaymentTransfer::find(['contract_payment_id' => intval($payment_id)]);
@@ -240,7 +240,7 @@ class PropertyController extends BaseController
         }, $transfers);
 
 
-        return Response::json($transfers)->send();
+        return Response::json($transfers);
     }
 
     public function getContractPaymentTransfer(Request $request, $id, $contract_id, $payment_id, $transfer_id)
@@ -248,13 +248,13 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
         $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
 
         if (!$payment) {
-            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
         }
 
         $transfer = ContractPaymentTransfer::find([
@@ -263,10 +263,10 @@ class PropertyController extends BaseController
         ], 1);
 
         if (!$transfer) {
-            return Response::json(['message' => 'ContractPaymentTransfer not found to ContractPayment'], 404)->send();
+            return Response::json(['message' => 'ContractPaymentTransfer not found to ContractPayment'], 404);
         }
 
-        return Response::json($transfer->toArray())->send();
+        return Response::json($transfer->toArray());
     }
 
     public function updateContractPaymentTransfer(Request $request, $id, $contract_id, $payment_id, $transfer_id)
@@ -274,13 +274,13 @@ class PropertyController extends BaseController
         $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
 
         if (!$contract) {
-            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
         $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)],1);
 
         if (!$payment) {
-            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
         }
 
         $transfer = ContractPaymentTransfer::find([
@@ -289,7 +289,7 @@ class PropertyController extends BaseController
         ], 1);
 
         if (!$transfer) {
-            return Response::json(['message' => 'ContractPaymentTransfer not found to ContractPayment'], 404)->send();
+            return Response::json(['message' => 'ContractPaymentTransfer not found to ContractPayment'], 404);
         }
 
         $status = $request->getAttribute('status');
@@ -297,6 +297,6 @@ class PropertyController extends BaseController
 
         $transfer->save();
 
-        return Response::json($transfer->toArray())->send();
+        return Response::json($transfer->toArray());
     }
 }

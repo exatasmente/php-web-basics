@@ -140,11 +140,4 @@ class Response
 
         return $this;
     }
-
-    public function __toString(): string
-    {
-        $this->send();
-
-        return '';
-    }
 }

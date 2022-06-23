@@ -48,9 +48,4 @@ $router->get('/contract-payment-transfer/{id}', 'App\Controllers\ContractPayment
 $router->put('/contract-payment-transfer/{id}', 'App\Controllers\ContractPaymentTransferController@update');
 
 
-//$router->get('execute_migrations', function() {
-//    (new \App\DatabaseMigrations\ExecuteMigrations())->run();
-//});
-
-
 return $router;

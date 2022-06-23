@@ -15,14 +15,14 @@ class TenantController extends BaseController
         $tenants = Tenant::find();
 
         if (!$tenants) {
-            return Response::json([])->send();
+            return Response::json([]);
         }
 
         $tenants = array_map(function($tenant) {
             return $tenant->toArray();
         }, $tenants);
 
-        return Response::json($tenants)->send();
+        return Response::json($tenants);
 
     }
 
@@ -34,10 +34,10 @@ class TenantController extends BaseController
 
         $tenant = Tenant::find(['id' => intval($id)], 1);
         if ($tenant) {
-            return Response::json($tenant->toArray())->send();
+            return Response::json($tenant->toArray());
         }
 
-        return Response::json(['message' => 'tenant not found'], 404)->send();
+        return Response::json(['message' => 'tenant not found'], 404);
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class TenantController extends BaseController
         $exist = Tenant::find($data, 1);
 
         if ($exist) {
-            return Response::json(['message' => 'Unable to save tenant, already exists an tenant with the same name, email and phone_number'], 422)->send();
+            return Response::json(['message' => 'Unable to save tenant, already exists an tenant with the same name, email and phone_number'], 422);
         }
 
         $tenant = new Tenant();
@@ -60,7 +60,7 @@ class TenantController extends BaseController
         $tenant->phone_number = $request->getAttribute('phone_number');
         $tenant->save();
 
-        return Response::json($tenant->toArray(), 201)->send();
+        return Response::json($tenant->toArray(), 201);
 
     }
 
@@ -69,7 +69,7 @@ class TenantController extends BaseController
         $tenant = Tenant::find(['id' => intval($id)], 1);
 
         if (!$tenant) {
-            return Response::json(['message' => 'tenant not found'], 404)->send();
+            return Response::json(['message' => 'tenant not found'], 404);
         }
 
         $tenant->name = $request->getAttribute('name', $tenant->name);
@@ -77,7 +77,7 @@ class TenantController extends BaseController
         $tenant->phone_number = $request->getAttribute('phone_number', $tenant->phone_number);
         $tenant->save();
 
-        return Response::json($tenant->toArray(), 200)->send();
+        return Response::json($tenant->toArray(), 200);
 
     }
 
@@ -87,11 +87,11 @@ class TenantController extends BaseController
         $tenant = Tenant::find(['id' => intval($id)], 1);
 
         if (!$tenant) {
-            return Response::json(['message' => 'tenant not found'], 404)->send();
+            return Response::json(['message' => 'tenant not found'], 404);
         }
 
         $tenant->delete();
 
-        return Response::json($tenant->toArray(), 200)->send();
+        return Response::json($tenant->toArray(), 200);
     }
 }

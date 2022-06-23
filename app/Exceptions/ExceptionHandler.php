@@ -17,6 +17,6 @@ class ExceptionHandler
 
         return Response::json([
             'message' => $e->getMessage(),
-        ], $statusCode)->send();
+        ], $statusCode);
     }
 }
