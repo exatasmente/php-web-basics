@@ -4,7 +4,6 @@ use App\DatabaseMigrations\ExecuteMigrations;
 use App\Exceptions\ExceptionHandler;
 use App\Models\AbstractModel;
 use App\Requests\Request;
-use App\Utils\DotEnv;
 use PDO;
 
 class Application
@@ -13,7 +12,6 @@ class Application
     private PDO $db;
     public function __construct()
     {
-        DotEnv::load(__DIR__. '/../.env');
         $dns = 'mysql:host='. getenv('DB_HOST') .';dbname='. getenv('DB_TABLE');
         $connection = new \PDO($dns,getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
         $this->db = $connection;

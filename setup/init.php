@@ -3,16 +3,19 @@
  * For development proposes
  * TODO: Vista Challenge
  */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 
 use App\Application;
-use App\Requests\Request;
+use App\Exceptions\ExceptionHandler;
+use App\Utils\DotEnv;
 
 require __DIR__.'/../vendor/autoload.php';
+
+DotEnv::load(__DIR__. '/../.env');
+$exceptionHandler = new ExceptionHandler();
+$exceptionHandler->init();
+
 $app = Application::make();
+
 $app->registerRoutes();
 
 return $app;
