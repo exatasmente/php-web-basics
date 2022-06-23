@@ -37,7 +37,7 @@ class PeriodService
         $daysLeft = $this->getDaysLeftToEndOfMonth($this->start_date);
         $numberOfDays = $this->getNumberOfDaysInMonth($this->start_date);
 
-        if ($daysLeft === 0) {
+        if ($daysLeft === $numberOfDays || $daysLeft === 0) {
             return $fullAmount;
         }
 
@@ -50,7 +50,7 @@ class PeriodService
         $daysLeft = $this->getDaysLeftToEndOfMonth($this->end_date);
         $numberOfDays = $this->getNumberOfDaysInMonth($this->end_date);
 
-        if ($daysLeft === 0) {
+        if ($daysLeft === $numberOfDays || $daysLeft === 0) {
             return $fullAmount;
         }
 
@@ -90,7 +90,6 @@ class PeriodService
 
         $cycle = $cycle-1;
 
-        $daysLeftToEndOfMonth = $this->getDaysLeftToEndOfMonth($date);
 
         return $date->add(new \DateInterval("P{$cycle}M"))->format('Y-m-01');
     }
@@ -111,7 +110,7 @@ class PeriodService
         $startDay = (int) $date->format('d');
         $numberOfDays = $this->getNumberOfDaysInMonth($date);
 
-        return $numberOfDays - $startDay;
+        return $numberOfDays - ($startDay - 1);
 
     }
 

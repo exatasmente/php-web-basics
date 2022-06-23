@@ -26,7 +26,12 @@ class PropertyContract extends Model
 
     public function getRentTotalAmount()
     {
-        return $this->rent_amount + $this->condo_amount + $this->iptu_amount;
+        return $this->rent_amount + $this->getExtrasTotalAmount();
+    }
+
+    public function getExtrasTotalAmount()
+    {
+        return $this->condo_amount + $this->iptu_amount;
     }
 
     public function getTransferAmountFor($amount)

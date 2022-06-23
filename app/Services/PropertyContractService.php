@@ -35,15 +35,15 @@ class PropertyContractService
         $starts_at = \DateTime::createFromFormat('Y-m-d' ,$propertyContract->starts_at);
         $ends_at = \DateTime::createFromFormat('Y-m-d' ,$propertyContract->ends_at);
         $period = PeriodService::make($starts_at, $ends_at);
-        $firstPaymentAmount = $period->calculateFirstPaymentAmount($propertyContract->getRentTotalAmount());
-        $lastPaymentAmount = $period->calculateLastPaymentAmount($propertyContract->getRentTotalAmount());
+        $firstPaymentAmount = $period->calculateFirstPaymentAmount($propertyContract->rent_amount);
+        $lastPaymentAmount = $period->calculateLastPaymentAmount($propertyContract->rent_amount);
 
         $numberOfCycles = $period->getNumberOfCycles();
         $this->createContractPayment($propertyContract, [
             'cycle' => 1,
             'starts_at' => $period->getStartDateForCycle(1),
             'ends_at' => $period->getEndDateForCycle(1),
-            'amount' => $firstPaymentAmount,
+            'amount' => $firstPaymentAmount + $propertyContract->getExtrasTotalAmount(),
             'note' => 'created',
         ]);
 
@@ -61,7 +61,7 @@ class PropertyContractService
             'cycle' => $numberOfCycles,
             'starts_at' => $period->getStartDateForCycle($numberOfCycles),
             'ends_at' => $period->getEndDateForCycle($numberOfCycles),
-            'amount' => $lastPaymentAmount,
+            'amount' => $lastPaymentAmount + $propertyContract->getExtrasTotalAmount(),
             'note' => 'created',
         ]);
     }
