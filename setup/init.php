@@ -1,11 +1,6 @@
 <?php
 /**
  * For development proposes
- * TODO: Response class
- * TODO: Request Validation
- * TODO: ORM
- * TODO: Middleware
- * TODO: Exception Handler, to generate user friendly response.
  * TODO: Vista Challenge
  */
 ini_set('display_errors', 1);
