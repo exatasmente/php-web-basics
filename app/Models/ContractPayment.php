@@ -28,7 +28,7 @@ class ContractPayment extends Model
     {
         $propertyContract = $this->getPropertyContract();
 
-        return $propertyContract->getTransferAmountFor($this->amount);
+        return $propertyContract->getTransferAmountFor($this->amount - $propertyContract->condo_amount);
     }
 
 
