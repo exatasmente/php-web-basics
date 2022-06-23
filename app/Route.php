@@ -6,14 +6,12 @@ use App\Controllers\Contracts\ControllerInterface;
 use App\Exceptions\HttpException;
 use App\Requests\Contracts\RequestInterface;
 use App\Requests\Request;
-use App\Requests\StorePropertyContractRequest;
 use ReflectionClass;
-use ReflectionParameter;
 
 class Route
 {
-    private $action;
     protected array $middleware;
+    private $action;
 
     public function __construct($action, array $middleware = ['before' => [], 'after' => []])
     {
@@ -23,7 +21,7 @@ class Route
 
     public function middleware($middleware, $before = true)
     {
-        $this->middleware[$before ? 'before' : 'after'] []= $middleware;
+        $this->middleware[$before ? 'before' : 'after'] [] = $middleware;
     }
 
     /**
@@ -44,7 +42,7 @@ class Route
 
         if (is_string($handler)) {
             [$action, $method] = explode('@', $handler);
-        } else if (is_array($handler) && count($handler)  == 2) {
+        } else if (is_array($handler) && count($handler) == 2) {
             $action = $handler[0];
             $method = $handler[1];
         } else {
@@ -76,7 +74,7 @@ class Route
             if ($method && method_exists($handlerInstance, $method)) {
                 $response = $handlerInstance->$method($request, ...$params);
             } else if (is_callable($handlerInstance)) {
-                $response =  $handlerInstance($request, ...$params);
+                $response = $handlerInstance($request, ...$params);
             }
 
             if (isset($response)) {

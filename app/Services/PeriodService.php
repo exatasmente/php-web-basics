@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessException;
-use DateInterval;
 use DateTime;
 
 class PeriodService
@@ -45,6 +44,20 @@ class PeriodService
         return intval(round(($daysLeft / $numberOfDays) * $fullAmount));
     }
 
+    public function getDaysLeftToEndOfMonth($date)
+    {
+        $startDay = (int)$date->format('d');
+        $numberOfDays = $this->getNumberOfDaysInMonth($date);
+
+        return $numberOfDays - ($startDay - 1);
+
+    }
+
+    public function getNumberOfDaysInMonth($date)
+    {
+        return (int)$date->format('t');
+    }
+
     public function calculateLastPaymentAmount(int $fullAmount)
     {
         $daysLeft = $this->getDaysLeftToEndOfMonth($this->end_date);
@@ -58,6 +71,16 @@ class PeriodService
         return intval(round(($daysLeft / $numberOfDays) * $fullAmount));
     }
 
+    public function getEndDateForCycle(int $cycle)
+    {
+        if ($cycle <= 0 || $cycle > $this->getNumberOfCycles()) {
+            throw new BusinessException('invalid cycle for period', 500);
+        }
+
+        $date = $this->getStartDateForCycle($cycle);
+        $date = DateTime::createFromFormat('Y-m-d', $date);
+        return $date->format('Y-m-t');
+    }
 
     public function getNumberOfCycles()
     {
@@ -65,13 +88,13 @@ class PeriodService
             return $this->numberOfCycles;
         }
 
-        $startYear = (int) $this->start_date->format('Y');
-        $startMonth = (int) $this->start_date->format('m');
-        $endYear = (int) $this->end_date->format('Y');
-        $endMonth = (int) $this->end_date->format('m');
+        $startYear = (int)$this->start_date->format('Y');
+        $startMonth = (int)$this->start_date->format('m');
+        $endYear = (int)$this->end_date->format('Y');
+        $endMonth = (int)$this->end_date->format('m');
 
 
-        $this->numberOfCycles =  (($endYear - $startYear) * 12) + ($endMonth - $startMonth);
+        $this->numberOfCycles = (($endYear - $startYear) * 12) + ($endMonth - $startMonth);
 
         return $this->numberOfCycles;
     }
@@ -88,35 +111,10 @@ class PeriodService
             return $date->format('Y-m-d');
         }
 
-        $cycle = $cycle-1;
+        $cycle = $cycle - 1;
 
 
         return $date->add(new \DateInterval("P{$cycle}M"))->format('Y-m-01');
-    }
-
-    public function getEndDateForCycle(int $cycle)
-    {
-        if ($cycle <= 0 || $cycle > $this->getNumberOfCycles()) {
-            throw new BusinessException('invalid cycle for period', 500);
-        }
-
-        $date = $this->getStartDateForCycle($cycle);
-        $date = DateTime::createFromFormat('Y-m-d', $date);
-        return $date->format('Y-m-t');
-    }
-
-    public function getDaysLeftToEndOfMonth($date)
-    {
-        $startDay = (int) $date->format('d');
-        $numberOfDays = $this->getNumberOfDaysInMonth($date);
-
-        return $numberOfDays - ($startDay - 1);
-
-    }
-
-    public function getNumberOfDaysInMonth($date)
-    {
-        return (int) $date->format('t');
     }
 
 }

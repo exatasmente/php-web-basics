@@ -2,7 +2,7 @@
 
 use App\Application;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 $app = Application::make();
 
 $app->executeMigrations(true);

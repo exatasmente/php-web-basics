@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use App\Exceptions\NotFoundHttpException;
@@ -7,48 +8,18 @@ use Exception;
 
 class Router
 {
-    public array $routes = [];
-    public array $globalMiddleware = ['before' => [], 'after' => []];
     /**
      * Regex from PhpRouter package
      * @see https://github.com/mrjgreen/phroute/
      */
     const VARIABLE_REGEX = "~\{\s* ([a-zA-Z0-9_]*) \s*?}\??~x";
-
-    private function getRouteVariables($path)
-    {
-        if(preg_match_all(self::VARIABLE_REGEX, $path, $matches, PREG_SET_ORDER)) {
-            return $matches;
-        }
-
-        return null;
-    }
+    public array $routes = [];
+    public array $globalMiddleware = ['before' => [], 'after' => []];
 
     public function get($path, $handler)
     {
         return $this->addRoute($path, $handler, 'GET');
     }
-
-    public function post($path, $handler)
-    {
-        return $this->addRoute($path, $handler, 'POST');
-    }
-
-    public function put($path, $handler)
-    {
-        return $this->addRoute($path, $handler, 'PUT');
-    }
-
-    public function delete($path, $handler)
-    {
-        return $this->addRoute($path, $handler, 'DELETE');
-    }
-
-    public function middleware($middleware, $before = true)
-    {
-        $this->globalMiddleware[$before ? 'before' : 'after'] []= $middleware;
-    }
-
 
     public function addRoute($path, $handler, $method)
     {
@@ -86,7 +57,34 @@ class Router
         return $routeInstance;
     }
 
+    private function getRouteVariables($path)
+    {
+        if (preg_match_all(self::VARIABLE_REGEX, $path, $matches, PREG_SET_ORDER)) {
+            return $matches;
+        }
 
+        return null;
+    }
+
+    public function post($path, $handler)
+    {
+        return $this->addRoute($path, $handler, 'POST');
+    }
+
+    public function put($path, $handler)
+    {
+        return $this->addRoute($path, $handler, 'PUT');
+    }
+
+    public function delete($path, $handler)
+    {
+        return $this->addRoute($path, $handler, 'DELETE');
+    }
+
+    public function middleware($middleware, $before = true)
+    {
+        $this->globalMiddleware[$before ? 'before' : 'after'] [] = $middleware;
+    }
 
     /**
      * @throws Exception
@@ -102,7 +100,7 @@ class Router
         if (in_array($path, $routes)) {
             $route = $this->routes[$path];
             if (!array_key_exists($method, $route)) {
-              throw new NotFoundHttpException('unable to find route ' . strtoupper($method) . ' : ' . $path, 404);
+                throw new NotFoundHttpException('unable to find route ' . strtoupper($method) . ' : ' . $path, 404);
             }
 
             $route = $route[$method];
@@ -130,14 +128,14 @@ class Router
                 foreach ($routeParts as $index => $routePart) {
 
                     if ($routePart === $pathParts[$index]) {
-                        $parsedRoute []= $pathParts[$index];
+                        $parsedRoute [] = $pathParts[$index];
                     } else if (array_key_exists($routePart, $currentRouteParams)) {
                         $param = $currentRouteParams[$routePart];
 
                         if ($param === $index) {
                             $parsedRoute [] = $routePart;
-                            $routePart = str_replace('{','', $routePart);
-                            $routePart = str_replace('}','',$routePart);
+                            $routePart = str_replace('{', '', $routePart);
+                            $routePart = str_replace('}', '', $routePart);
                             $params[$routePart] = $pathParts[$index];
                         }
                     }

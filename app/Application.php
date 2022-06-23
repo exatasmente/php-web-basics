@@ -1,5 +1,7 @@
 <?php
+
 namespace App;
+
 use App\DatabaseMigrations\ExecuteMigrations;
 use App\Exceptions\ExceptionHandler;
 use App\Models\AbstractModel;
@@ -10,18 +12,14 @@ class Application
 {
     private Router $router;
     private PDO $db;
+
     public function __construct()
     {
-        $dns = 'mysql:host='. getenv('DB_HOST') .';dbname='. getenv('DB_TABLE');
-        $connection = new \PDO($dns,getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
+        $dns = 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_TABLE');
+        $connection = new \PDO($dns, getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
         $this->db = $connection;
 
         AbstractModel::useConnection($connection);
-    }
-
-    public function getDBConnection()
-    {
-        return $this->db;
     }
 
     public static function make()
@@ -29,6 +27,10 @@ class Application
         return new self();
     }
 
+    public function getDBConnection()
+    {
+        return $this->db;
+    }
 
     public function handleRequest(Request $request)
     {
@@ -41,7 +43,7 @@ class Application
 
     public function registerRoutes()
     {
-        $this->router = include_once (__DIR__ . '/../routes/routes.php');
+        $this->router = include_once(__DIR__ . '/../routes/routes.php');
     }
 
 

@@ -15,7 +15,7 @@ class BaseController implements ControllerInterface
     {
         $method = strtolower($request->getMethod());
 
-        if (!method_exists($this,$method )) {
+        if (!method_exists($this, $method)) {
             throw new Exception();
         }
 

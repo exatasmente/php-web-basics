@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+
 use App\Models\Traits\HasPropertyOwner;
 
 class Property extends Model
@@ -16,7 +18,6 @@ class Property extends Model
     public $addr_number;
     public $addr_zipcode;
     public $property_owner_id;
-
 
 
 }

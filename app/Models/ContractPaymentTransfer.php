@@ -8,11 +8,9 @@ class ContractPaymentTransfer extends Model
 {
     use HasContractPayment;
 
-    public static string $tableName = 'contract_payment_transfers';
-
     const STATUS_TRANSFERRED = 'transferred';
     const STATUS_PENDING = 'pending';
-
+    public static string $tableName = 'contract_payment_transfers';
     public $cycle;
     public $starts_at;
     public $ends_at;
@@ -23,6 +21,6 @@ class ContractPaymentTransfer extends Model
 
     public static function isValidStatus(string $status)
     {
-        return in_array($status,[self::STATUS_PENDING, self::STATUS_TRANSFERRED]);
+        return in_array($status, [self::STATUS_PENDING, self::STATUS_TRANSFERRED]);
     }
 }

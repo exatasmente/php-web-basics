@@ -6,7 +6,7 @@ use App\Models\PropertyContract;
 
 trait HasPropertyContract
 {
-    public function getPropertyContract() : PropertyContract
+    public function getPropertyContract(): PropertyContract
     {
         if (!isset($this->property_contract) || !$this->property_contract) {
             $this->property_contract = PropertyContract::find(['id' => $this->property_contract_id], 1);

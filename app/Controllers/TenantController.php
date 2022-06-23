@@ -3,10 +3,10 @@
 namespace App\Controllers;
 
 use App\Controllers\Contracts\BaseController;
+use App\Models\Tenant;
 use App\Requests\Request;
 use App\Response;
 use ReflectionException;
-use App\Models\Tenant;
 
 class TenantController extends BaseController
 {
@@ -18,7 +18,7 @@ class TenantController extends BaseController
             return Response::json([]);
         }
 
-        $tenants = array_map(function($tenant) {
+        $tenants = array_map(function ($tenant) {
             return $tenant->toArray();
         }, $tenants);
 

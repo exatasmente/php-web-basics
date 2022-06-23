@@ -4,9 +4,11 @@ namespace App\Requests\Contracts;
 
 interface RequestInterface
 {
-    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null): void;
-
     public static function createFromGlobals(): self;
+
+    public static function capture();
+
+    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null): void;
 
     public function initializeFromRequest(RequestInterface $request);
 
@@ -21,8 +23,6 @@ interface RequestInterface
     public function hasAttribute($name);
 
     public function getAttributes();
-
-    public static function capture();
 
     public function setRouteParams($params);
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Middlewares\Contracts;
 
 use App\Requests\Request;

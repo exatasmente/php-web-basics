@@ -212,7 +212,7 @@ class PropertyController extends BaseController
         }
 
         $status = $request->getAttribute('status');
-        $payment->status =  ContractPayment::isValidStatus($status) ? $status : $payment->status;
+        $payment->status = ContractPayment::isValidStatus($status) ? $status : $payment->status;
 
         $payment->save();
 
@@ -227,7 +227,7 @@ class PropertyController extends BaseController
             return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
-        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)],1);
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
 
         if (!$payment) {
             return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
@@ -277,7 +277,7 @@ class PropertyController extends BaseController
             return Response::json(['message' => 'PropertyContract not found to Property'], 404);
         }
 
-        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)],1);
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
 
         if (!$payment) {
             return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404);
@@ -293,7 +293,7 @@ class PropertyController extends BaseController
         }
 
         $status = $request->getAttribute('status');
-        $transfer->status =  ContractPaymentTransfer::isValidStatus($status) ? $status : $transfer->status;
+        $transfer->status = ContractPaymentTransfer::isValidStatus($status) ? $status : $transfer->status;
 
         $transfer->save();
 

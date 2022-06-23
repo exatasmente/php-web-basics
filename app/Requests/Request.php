@@ -25,12 +25,6 @@ class Request implements ValidatesRequestInterface, RequestInterface
         $this->initialize($query, $request, $attributes, $cookies, $files, $server, $content);
     }
 
-
-    public static function createFromGlobals(): self
-    {
-        return new self($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
-    }
-
     public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null): void
     {
         $this->query = $query;
@@ -44,172 +38,6 @@ class Request implements ValidatesRequestInterface, RequestInterface
         $this->routeParams = [];
         $this->requestUri = null;
         $this->method = null;
-    }
-
-    public function setRouteParams($params)
-    {
-        $this->routeParams = $params;
-    }
-
-    public static function capture()
-    {
-        return static::createFromGlobals();
-    }
-
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    public function hasHeader($name)
-    {
-        return array_key_exists($name, $this->headers);
-    }
-
-    public function getHeader($name)
-    {
-        if (!$this->hasHeader($name)) {
-            return null;
-        }
-
-        return $this->headers[$name];
-    }
-
-    public function getMethod()
-    {
-        if ($this->method) {
-            return $this->method;
-        }
-
-        $this->method = strtoupper($this->getServerParam('REQUEST_METHOD'));
-
-
-        return $this->method;
-    }
-
-    public function getContent(bool $asResource = false)
-    {
-        $currentContentIsResource = \is_resource($this->content);
-
-        if (true === $asResource) {
-            if ($currentContentIsResource) {
-                rewind($this->content);
-
-                return $this->content;
-            }
-
-            if (\is_string($this->content)) {
-                $resource = fopen('php://temp', 'r+');
-                fwrite($resource, $this->content);
-                rewind($resource);
-
-                return $resource;
-            }
-
-            $this->content = false;
-
-            return fopen('php://input', 'r');
-        }
-
-        if ($currentContentIsResource) {
-            rewind($this->content);
-
-            return stream_get_contents($this->content);
-        }
-
-        if (null === $this->content || false === $this->content) {
-            $this->content = file_get_contents('php://input');
-        }
-
-        return $this->content;
-    }
-
-    public function getServerParams()
-    {
-        return $this->server;
-    }
-
-    public function hasServerParam($name)
-    {
-        return array_key_exists($name, $this->server);
-    }
-
-    public function getServerParam($name)
-    {
-        return $this->hasServerParam($name)
-            ? $this->server[$name]
-            : null;
-    }
-
-    public function getCookieParams()
-    {
-        return $this->cookies;
-    }
-
-
-    public function getQueryParams()
-    {
-        return $this->query;
-    }
-
-    public function hasQueryParam($name)
-    {
-        return array_key_exists($name, $this->query);
-    }
-
-    public function getQueryParam($name, $default = null)
-    {
-        if ($this->hasQueryParam($name)) {
-            return $this->query[$name];
-        }
-
-        return $default;
-    }
-
-    public function getRouteParam($name)
-    {
-        return array_key_exists($name, $this->routeParams)
-            ? $this->routeParams[$name]
-            : null;
-    }
-
-    public function getRouteParams()
-    {
-        return $this->routeParams;
-    }
-
-    public function getUploadedFiles()
-    {
-        return $this->files;
-    }
-
-    public function getAttributes()
-    {
-        return $this->request;
-    }
-
-    public function hasAttribute($name)
-    {
-        return array_key_exists($name, $this->request);
-    }
-
-    public function getAttribute($name, $default = null)
-    {
-        if ($this->hasAttribute($name)) {
-            return $this->request[$name];
-        }
-
-        return $default;
-    }
-
-    public function getContentType()
-    {
-        return $this->getHeader('CONTENT_TYPE');
-    }
-
-    public function getRequestUri()
-    {
-        return $this->getServerParam('REQUEST_URI');
     }
 
     private function parseHeaders(array $server)
@@ -253,7 +81,7 @@ class Request implements ValidatesRequestInterface, RequestInterface
 
         // PHP_AUTH_USER/PHP_AUTH_PW
         if (isset($headers['PHP_AUTH_USER'])) {
-            $headers['AUTHORIZATION'] = 'Basic '.base64_encode($headers['PHP_AUTH_USER'].':'.($headers['PHP_AUTH_PW'] ?? ''));
+            $headers['AUTHORIZATION'] = 'Basic ' . base64_encode($headers['PHP_AUTH_USER'] . ':' . ($headers['PHP_AUTH_PW'] ?? ''));
         } elseif (isset($headers['PHP_AUTH_DIGEST'])) {
             $headers['AUTHORIZATION'] = $headers['PHP_AUTH_DIGEST'];
         }
@@ -279,6 +107,176 @@ class Request implements ValidatesRequestInterface, RequestInterface
         }
 
         return $content;
+    }
+
+    public function getContent(bool $asResource = false)
+    {
+        $currentContentIsResource = \is_resource($this->content);
+
+        if (true === $asResource) {
+            if ($currentContentIsResource) {
+                rewind($this->content);
+
+                return $this->content;
+            }
+
+            if (\is_string($this->content)) {
+                $resource = fopen('php://temp', 'r+');
+                fwrite($resource, $this->content);
+                rewind($resource);
+
+                return $resource;
+            }
+
+            $this->content = false;
+
+            return fopen('php://input', 'r');
+        }
+
+        if ($currentContentIsResource) {
+            rewind($this->content);
+
+            return stream_get_contents($this->content);
+        }
+
+        if (null === $this->content || false === $this->content) {
+            $this->content = file_get_contents('php://input');
+        }
+
+        return $this->content;
+    }
+
+    public function getContentType()
+    {
+        return $this->getHeader('CONTENT_TYPE');
+    }
+
+    public function getHeader($name)
+    {
+        if (!$this->hasHeader($name)) {
+            return null;
+        }
+
+        return $this->headers[$name];
+    }
+
+    public function hasHeader($name)
+    {
+        return array_key_exists($name, $this->headers);
+    }
+
+    public static function capture()
+    {
+        return static::createFromGlobals();
+    }
+
+    public static function createFromGlobals(): self
+    {
+        return new self($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
+    }
+
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    public function getMethod()
+    {
+        if ($this->method) {
+            return $this->method;
+        }
+
+        $this->method = strtoupper($this->getServerParam('REQUEST_METHOD'));
+
+
+        return $this->method;
+    }
+
+    public function getServerParam($name)
+    {
+        return $this->hasServerParam($name)
+            ? $this->server[$name]
+            : null;
+    }
+
+    public function hasServerParam($name)
+    {
+        return array_key_exists($name, $this->server);
+    }
+
+    public function getServerParams()
+    {
+        return $this->server;
+    }
+
+    public function getCookieParams()
+    {
+        return $this->cookies;
+    }
+
+    public function getQueryParams()
+    {
+        return $this->query;
+    }
+
+    public function getQueryParam($name, $default = null)
+    {
+        if ($this->hasQueryParam($name)) {
+            return $this->query[$name];
+        }
+
+        return $default;
+    }
+
+    public function hasQueryParam($name)
+    {
+        return array_key_exists($name, $this->query);
+    }
+
+    public function getRouteParam($name)
+    {
+        return array_key_exists($name, $this->routeParams)
+            ? $this->routeParams[$name]
+            : null;
+    }
+
+    public function getRouteParams()
+    {
+        return $this->routeParams;
+    }
+
+    public function setRouteParams($params)
+    {
+        $this->routeParams = $params;
+    }
+
+    public function getUploadedFiles()
+    {
+        return $this->files;
+    }
+
+    public function getAttributes()
+    {
+        return $this->request;
+    }
+
+    public function getAttribute($name, $default = null)
+    {
+        if ($this->hasAttribute($name)) {
+            return $this->request[$name];
+        }
+
+        return $default;
+    }
+
+    public function hasAttribute($name)
+    {
+        return array_key_exists($name, $this->request);
+    }
+
+    public function getRequestUri()
+    {
+        return $this->getServerParam('REQUEST_URI');
     }
 
     public function validateRequest()

@@ -2,7 +2,7 @@
 
 namespace App\DatabaseMigrations;
 
-require __DIR__.'/../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 class ExecuteMigrations
 {
@@ -53,7 +53,7 @@ class ExecuteMigrations
             }
 
             $executed [] = $migration;
-            echo ' Done migration '  . $migration . PHP_EOL;
+            echo ' Done migration ' . $migration . PHP_EOL;
 
 
         }

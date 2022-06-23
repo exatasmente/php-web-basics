@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Models;
+
 use App\Models\Traits\HasProperty;
-use App\Models\Traits\HasPropertyOwner;
 use App\Models\Traits\HasTenant;
 
 class PropertyContract extends Model
@@ -24,6 +25,16 @@ class PropertyContract extends Model
     protected $tenant;
     protected $property;
 
+    public function getTransferAmount()
+    {
+        return $this->getTransferAmountFor($this->getRentTotalAmount() - $this->condo_amount);
+    }
+
+    public function getTransferAmountFor($amount)
+    {
+        return ($this->administration_fee / 100) * $amount;
+    }
+
     public function getRentTotalAmount()
     {
         return $this->rent_amount + $this->getExtrasTotalAmount();
@@ -32,16 +43,6 @@ class PropertyContract extends Model
     public function getExtrasTotalAmount()
     {
         return $this->condo_amount + $this->iptu_amount;
-    }
-
-    public function getTransferAmountFor($amount)
-    {
-        return ($this->administration_fee / 100) * $amount;
-    }
-
-    public function getTransferAmount()
-    {
-        return $this->getTransferAmountFor($this->getRentTotalAmount() - $this->condo_amount);
     }
 
 }

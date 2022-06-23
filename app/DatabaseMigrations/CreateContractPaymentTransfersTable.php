@@ -37,6 +37,6 @@ class CreateContractPaymentTransfersTable extends Migration implements Migration
 
     public function getStep()
     {
-       return 6;
+        return 6;
     }
 }

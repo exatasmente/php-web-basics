@@ -1,6 +1,7 @@
 <?php
 
 namespace App\DatabaseMigrations;
+
 use App\Models\Model;
 
 class Migration extends Model

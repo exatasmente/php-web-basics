@@ -1,7 +1,8 @@
 <?php
+
 namespace App\DatabaseMigrations;
 
-class CreatePropertyOwnersTable extends Migration  implements MigrationInterface
+class CreatePropertyOwnersTable extends Migration implements MigrationInterface
 {
 
     public function up()

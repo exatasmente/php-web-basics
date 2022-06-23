@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Services;
+
 use App\Models\ContractPayment;
 use App\Models\ContractPaymentTransfer;
 use App\Models\Property;
@@ -25,15 +27,10 @@ class PropertyContractService
 
     }
 
-    public function updatePropertyContract(PropertyContract $propertyContract, array $propertyContractData)
-    {
-
-    }
-
     public function generateContractPayments(PropertyContract $propertyContract)
     {
-        $starts_at = \DateTime::createFromFormat('Y-m-d' ,$propertyContract->starts_at);
-        $ends_at = \DateTime::createFromFormat('Y-m-d' ,$propertyContract->ends_at);
+        $starts_at = \DateTime::createFromFormat('Y-m-d', $propertyContract->starts_at);
+        $ends_at = \DateTime::createFromFormat('Y-m-d', $propertyContract->ends_at);
         $period = PeriodService::make($starts_at, $ends_at);
         $firstPaymentAmount = $period->calculateFirstPaymentAmount($propertyContract->rent_amount);
         $lastPaymentAmount = $period->calculateLastPaymentAmount($propertyContract->rent_amount);
@@ -47,7 +44,7 @@ class PropertyContractService
             'note' => 'created',
         ]);
 
-        for ($cycle = 2; $cycle <= $numberOfCycles-1 ; $cycle += 1) {
+        for ($cycle = 2; $cycle <= $numberOfCycles - 1; $cycle += 1) {
             $this->createContractPayment($propertyContract, [
                 'cycle' => $cycle,
                 'starts_at' => $period->getStartDateForCycle($cycle),
@@ -94,5 +91,10 @@ class PropertyContractService
         $contractPaymentTransfer->save();
 
         return $contractPaymentTransfer;
+    }
+
+    public function updatePropertyContract(PropertyContract $propertyContract, array $propertyContractData)
+    {
+
     }
 }

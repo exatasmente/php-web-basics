@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Utils;
 
 class DotEnv
 {
 
-    public static function load(string $path) :void
+    public static function load(string $path): void
     {
-        if(!file_exists($path)) {
+        if (!file_exists($path)) {
             throw new \InvalidArgumentException(sprintf('%s does not exist', $path));
         }
 

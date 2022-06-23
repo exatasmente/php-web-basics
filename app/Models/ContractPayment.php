@@ -1,16 +1,16 @@
 <?php
+
 namespace App\Models;
+
 use App\Models\Traits\HasPropertyContract;
 
 class ContractPayment extends Model
 {
     use HasPropertyContract;
 
-    public static string $tableName = 'contract_payments';
-
     const STATUS_PAID = 'paid';
     const STATUS_PENDING = 'pending';
-
+    public static string $tableName = 'contract_payments';
     public $cycle;
     public $starts_at;
     public $ends_at;
@@ -21,7 +21,7 @@ class ContractPayment extends Model
 
     public static function isValidStatus(string $status)
     {
-        return in_array($status,[self::STATUS_PENDING, self::STATUS_PAID]);
+        return in_array($status, [self::STATUS_PENDING, self::STATUS_PAID]);
     }
 
     public function getTransferAmount()
