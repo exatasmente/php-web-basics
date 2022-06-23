@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\Contracts\BaseController;
 use App\Models\ContractPayment;
+use App\Models\ContractPaymentTransfer;
 use App\Models\Property;
 use App\Models\PropertyContract;
 use App\Models\Tenant;
@@ -187,12 +188,115 @@ class PropertyController extends BaseController
             return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
         }
 
-        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)]);
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
 
         if (!$payment) {
             return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
         }
 
         return Response::json($payment->toArray())->send();
+    }
+
+    public function updateContractPayment(Request $request, $id, $contract_id, $payment_id)
+    {
+        $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
+
+        if (!$contract) {
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+        }
+
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
+
+        if (!$payment) {
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+        }
+
+        $status = $request->getAttribute('status');
+        $payment->status =  ContractPayment::isValidStatus($status) ? $status : $payment->status;
+
+        $payment->save();
+
+        return Response::json($payment->toArray())->send();
+    }
+
+    public function getContractPaymentTransfers(Request $request, $id, $contract_id, $payment_id)
+    {
+        $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
+
+        if (!$contract) {
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+        }
+
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)],1);
+
+        if (!$payment) {
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+        }
+
+        $transfers = ContractPaymentTransfer::find(['contract_payment_id' => intval($payment_id)]);
+
+        $transfers = array_map(function ($transfer) {
+            return $transfer->toArray();
+        }, $transfers);
+
+
+        return Response::json($transfers)->send();
+    }
+
+    public function getContractPaymentTransfer(Request $request, $id, $contract_id, $payment_id, $transfer_id)
+    {
+        $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
+
+        if (!$contract) {
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+        }
+
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)], 1);
+
+        if (!$payment) {
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+        }
+
+        $transfer = ContractPaymentTransfer::find([
+            'id' => intval($transfer_id),
+            'contract_payment_id' => intval($payment_id)
+        ], 1);
+
+        if (!$transfer) {
+            return Response::json(['message' => 'ContractPaymentTransfer not found to ContractPayment'], 404)->send();
+        }
+
+        return Response::json($transfer->toArray())->send();
+    }
+
+    public function updateContractPaymentTransfer(Request $request, $id, $contract_id, $payment_id, $transfer_id)
+    {
+        $contract = PropertyContract::find(['property_id' => intval($id), 'id' => intval($contract_id)], 1);
+
+        if (!$contract) {
+            return Response::json(['message' => 'PropertyContract not found to Property'], 404)->send();
+        }
+
+        $payment = ContractPayment::find(['id' => intval($payment_id), 'property_contract_id' => intval($contract_id)],1);
+
+        if (!$payment) {
+            return Response::json(['message' => 'ContractPayment not found to PropertyContract'], 404)->send();
+        }
+
+        $transfer = ContractPaymentTransfer::find([
+            'id' => intval($transfer_id),
+            'contract_payment_id' => intval($payment_id)
+        ], 1);
+
+        if (!$transfer) {
+            return Response::json(['message' => 'ContractPaymentTransfer not found to ContractPayment'], 404)->send();
+        }
+
+        $status = $request->getAttribute('status');
+        $transfer->status =  ContractPaymentTransfer::isValidStatus($status) ? $status : $transfer->status;
+
+        $transfer->save();
+
+        return Response::json($transfer->toArray())->send();
     }
 }

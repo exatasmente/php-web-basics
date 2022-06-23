@@ -28,12 +28,25 @@ $router->post('/property/{id}/contract', 'App\Controllers\PropertyController@sto
 $router->get('/property/{id}/contract/{contract_id}', 'App\Controllers\PropertyController@getContract');
 $router->get('/property/{id}/contract/{contract_id}/payment', 'App\Controllers\PropertyController@getContractPayments');
 $router->get('/property/{id}/contract/{contract_id}/payment/{payment_id}', 'App\Controllers\PropertyController@getContractPayment');
+$router->put('/property/{id}/contract/{contract_id}/payment/{payment_id}', 'App\Controllers\PropertyController@updateContractPayment');
+$router->get('/property/{id}/contract/{contract_id}/payment/{payment_id}/transfer', 'App\Controllers\PropertyController@getContractPaymentTransfers');
+$router->get('/property/{id}/contract/{contract_id}/payment/{payment_id}/transfer/{transfer_id}', 'App\Controllers\PropertyController@getContractPaymentTransfer');
+$router->put('/property/{id}/contract/{contract_id}/payment/{payment_id}/transfer/{transfer_id}', 'App\Controllers\PropertyController@updateContractPaymentTransfer');
 
-//$router->get('/property-contract', 'App\Controllers\PropertyContractController@all');
-//$router->get('/property-contract/{id}', 'App\Controllers\PropertyContractController@show');
-//$router->post('/property-contract', 'App\Controllers\PropertyContractController@store');
-//$router->put('/property-contract/{id}', 'App\Controllers\PropertyContractController@update');
-//$router->delete('/property-contract/{id}', 'App\Controllers\PropertyContractController@delete');
+$router->get('/property-contract', 'App\Controllers\PropertyContractController@all');
+$router->get('/property-contract/{id}', 'App\Controllers\PropertyContractController@show');
+$router->post('/property-contract', 'App\Controllers\PropertyContractController@store');
+$router->put('/property-contract/{id}', 'App\Controllers\PropertyContractController@update');
+$router->delete('/property-contract/{id}', 'App\Controllers\PropertyContractController@delete');
+
+$router->get('/contract-payment', 'App\Controllers\ContractPaymentController@all');
+$router->get('/contract-payment/{id}', 'App\Controllers\ContractPaymentController@show');
+$router->put('/contract-payment/{id}', 'App\Controllers\ContractPaymentController@update');
+
+$router->get('/contract-payment-transfer', 'App\Controllers\ContractPaymentTransferController@all');
+$router->get('/contract-payment-transfer/{id}', 'App\Controllers\ContractPaymentTransferController@show');
+$router->put('/contract-payment-transfer/{id}', 'App\Controllers\ContractPaymentTransferController@update');
+
 
 //$router->get('execute_migrations', function() {
 //    (new \App\DatabaseMigrations\ExecuteMigrations())->run();

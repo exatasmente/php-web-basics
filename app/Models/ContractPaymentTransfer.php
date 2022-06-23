@@ -20,4 +20,9 @@ class ContractPaymentTransfer extends Model
     public $notes;
     public $amount;
     public $contract_payment_id;
+
+    public static function isValidStatus(string $status)
+    {
+        return in_array($status,[self::STATUS_PENDING, self::STATUS_TRANSFERRED]);
+    }
 }

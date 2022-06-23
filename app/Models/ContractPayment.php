@@ -19,6 +19,11 @@ class ContractPayment extends Model
     public $amount;
     public $property_contract_id;
 
+    public static function isValidStatus(string $status)
+    {
+        return in_array($status,[self::STATUS_PENDING, self::STATUS_PAID]);
+    }
+
     public function getTransferAmount()
     {
         $propertyContract = $this->getPropertyContract();
