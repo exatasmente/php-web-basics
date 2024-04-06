@@ -5,6 +5,7 @@ use App\Router;
 $router = new Router();
 
 $router->middleware(new App\Middlewares\ValidatesRequestsMiddleware());
+$router->middleware(new App\Middlewares\JsonRequest());
 $router->get('/tenant', 'App\Controllers\TenantController@all');
 $router->get('/tenant/{id}', 'App\Controllers\TenantController@show');
 $router->post('/tenant', 'App\Controllers\TenantController@store');
