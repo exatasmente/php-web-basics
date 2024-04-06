@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\Contracts\BaseController;
 use App\Models\Tenant;
 use App\Requests\Request;
+use App\Requests\CreateTenantRequest;
 use App\Response;
 use ReflectionException;
 
@@ -40,20 +41,8 @@ class TenantController extends BaseController
         return Response::json(['message' => 'tenant not found'], 404);
     }
 
-    public function store(Request $request)
+    public function store(CreateTenantRequest $request)
     {
-        $data = [
-            'name' => $request->getAttribute('name'),
-            'email' => $request->getAttribute('email'),
-            'phone_number' => $request->getAttribute('phone_number')
-        ];
-
-        $exist = Tenant::find($data, 1);
-
-        if ($exist) {
-            return Response::json(['message' => 'Unable to save tenant, already exists an tenant with the same name, email and phone_number'], 422);
-        }
-
         $tenant = new Tenant();
         $tenant->name = $request->getAttribute('name');
         $tenant->email = $request->getAttribute('email');
