@@ -1,8 +1,3 @@
 <?php
-
-use App\Application;
-
-require __DIR__ . '/../vendor/autoload.php';
-$app = Application::make();
-
+$app = require_once __DIR__ . '/../setup/init.php';
 $app->executeMigrations(false);
