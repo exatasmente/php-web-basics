@@ -17,12 +17,11 @@ class CreateTenantRequest extends Request
         $data = $this->getData();
 
         foreach ($data as $key => $value) {
-            echo $key . ' ' . $value;
             if (empty($value)) {
                 throw new HttpValidationException("{$key} is required", 422);
             }
         }
-        
+
         $exists = Tenant::find($data, 1);
 
         if ($exists) {
